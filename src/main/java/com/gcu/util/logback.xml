@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <property name="LOGS" value="./logs" />
+    <property name="LOGGLY_TOKEN" value="caac1b8f-c5d5-4fe8-97f5-870a6d64f450"/>
+
+    <!-- Console Appender -->
+    <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <Pattern>%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n</Pattern>
+        </layout>
+    </appender>
+ 
+    <!-- GCU Console Appender -->
+    <appender name="GcuConsole" class="ch.qos.logback.core.ConsoleAppender">
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>TRACE</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <Pattern>GCU: %d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n</Pattern>
+        </layout>
+    </appender>
+
+    <!-- Loggly Appender -->
+    <appender name="LOGGLY" class="ch.qos.logback.ext.loggly.LogglyAppender">
+        <endpointUrl>https://logs-01.loggly.com/inputs/$%7BLOGGLY_TOKEN%7D/tag/logback</endpointUrl>
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>%d{"ISO8601", UTC} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </layout>
+    </appender>
+
+    <!-- Root Logger -->
+    <root level="info">
+        <appender-ref ref="Console" />
+        <appender-ref ref="LOGGLY" />
+    </root>
+ 
+    <!-- GCU Package Logger -->
+    <logger name="com.gcu" level="trace" additivity="false">
+        <appender-ref ref="GcuConsole" />
+        <appender-ref ref="LOGGLY" />
+    </logger>
+
+</configuration> 
